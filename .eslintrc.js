@@ -10,6 +10,9 @@ module.exports = {
         node: true,
         jest: true,
     },
+    globals: {
+        $: true,
+    },
     plugins: ['prettier'],
     extends: ['eslint:recommended', 'plugin:prettier/recommended'],
     rules: {

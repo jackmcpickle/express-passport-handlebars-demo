@@ -1,3 +1,6 @@
+/* eslint-disable indent */
+/* global toastTemplate */
+
 // This file just does a GET request to figure out which user is logged in
 // and updates the HTML on the page
 $.get('/api/user_data').then(function (data) {
@@ -27,18 +30,18 @@ window.toastTemplate = (alertType, message) => {
     let title = 'Message';
     let alertTypeColour = '#007aff';
     switch (alertType) {
-    case 'error':
-        title = 'Error';
-        alertTypeColour = '#dc3545';
-        break;
-    case 'success':
-        title = 'Success';
-        alertTypeColour = '#28a745';
-        break;
+        case 'error':
+            title = 'Error';
+            alertTypeColour = '#dc3545';
+            break;
+        case 'success':
+            title = 'Success';
+            alertTypeColour = '#28a745';
+            break;
 
-    default:
-        // use initial
-        break;
+        default:
+            // use initial
+            break;
     }
     return `
 <div aria-live="polite" aria-atomic="true" style="position: relative;">
