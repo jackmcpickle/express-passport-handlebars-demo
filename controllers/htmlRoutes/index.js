@@ -36,7 +36,7 @@ router.get('/logout', (req, res) => {
 
 router.get('/signup', (req, res) => {
     // If the user already has an account send them to the dashboard page
-    if (req.user) {
+    if (req.session.loggedIn) {
         res.redirect('/dashboard');
     }
     res.render('signup', {
