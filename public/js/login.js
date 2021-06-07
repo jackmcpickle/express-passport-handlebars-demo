@@ -1,35 +1,38 @@
-/* global toastMessage */
 // Getting references to our form and inputs
-const loginForm = $('form.login');
+const $loginForm = document.querySelector('form.login');
 
 // When the form is submitted, we validate there's an email and password entered
-loginForm.on('submit', (event) => {
+$loginForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    const userDataArray = $(event.currentTarget).serializeArray();
+    const email = document.querySelector('#email').value;
+    const password = document.querySelector('#password').value;
 
-    const userData = userDataArray.reduce((userData, item) => ({ ...userData, [item.name]: item.value }), {});
-
-    if (!userData.email || !userData.password) {
+    if (!email || !password) {
         return;
     }
 
     // If we have an email and password we run the loginUser function and clear the form
-    loginUser(userData);
-    event.currentTarget.reset();
+    loginUser({ email, password });
+    event.target.reset();
 });
 
 // loginUser does a post to our "api/login" route and if successful, redirects us the the members page
 function loginUser({ email, password }) {
-    $.post('/api/login', {
-        email: email,
-        password: password,
+    fetch('/api/users/login', {
+        method: 'POST',
+        body: JSON.stringify({
+            email,
+            password,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })
-        .then((userData) => {
-            toastMessage('success', `Thanks, ${userData.name}. Redirecting in 3 sec`);
-            setTimeout(() => window.location.replace('/members'), 3000);
-            // If there's an error, log the error
+        .then((r) => r.json())
+        .then(() => {
+            window.location.replace('/dashboard');
         })
         .catch((err) => {
-            toastMessage('error', err.responseText);
+            console.error(err.responseText);
         });
 }

@@ -1,35 +1,39 @@
-/* global toastMessage */
-
 // Getting references to our form and input
-const $signUpForm = $('form.signup');
+const $signUpForm = document.querySelector('form.signup');
 
 // When the signup button is clicked, we validate the email and password are not blank
-$signUpForm.on('submit', (event) => {
+$signUpForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    const userDataArray = $(event.currentTarget).serializeArray();
 
-    const userData = userDataArray.reduce((userData, item) => ({ ...userData, [item.name]: item.value }), {});
+    const email = document.querySelector('#email').value;
+    const name = document.querySelector('#name').value;
+    const password = document.querySelector('#password').value;
 
-    if (!userData.name || !userData.email || !userData.password) {
+    if (!name || !email || !password) {
         return;
     }
     // If we have an email and password, run the signUpUser function
-    signUpUser(userData);
-    event.currentTarget.reset();
+    signUpUser({ name, email, password });
+    event.target.reset();
 });
 
 // Does a post to the signup route. If successful, we are redirected to the members page
 // Otherwise we log any errors
 function signUpUser({ name, email, password }) {
-    $.post('/api/signup', {
-        email: email,
-        name: name,
-        password: password,
+    fetch('/api/users/signup', {
+        method: 'POST',
+        body: JSON.stringify({
+            email,
+            name,
+            password,
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })
-        .then((data) => {
-            //
-            toastMessage('success', `Thanks, ${data.name}. Redirecting in 3 sec`);
-            setTimeout(() => window.location.replace('/members'), 3000);
+        .then((r) => r.json())
+        .then(() => {
+            window.location.replace('/dashboard');
         })
-        .catch((err) => toastMessage('error', err.responseText));
+        .catch((err) => console.log(err.responseText));
 }
